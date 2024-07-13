@@ -56,9 +56,12 @@ def apply_3d_clahe(img_data, radius=(4, 4, 4), alpha=0.3, beta=0.3):
     image = sitk.GetImageFromArray(img_data)
     # Apply CLAHE
     clahe_filter = sitk.AdaptiveHistogramEqualizationImageFilter()
-    clahe_filter.SetRadius(radius)
-    clahe_filter.SetAlpha(alpha)
-    clahe_filter.SetBeta(beta)
+    if radius is not None:
+        clahe_filter.SetRadius(radius)
+    if alpha is not None:
+        clahe_filter.SetAlpha(alpha)
+    if beta is not None:
+        clahe_filter.SetBeta(beta)
     enhanced_image = clahe_filter.Execute(image)
     enhanced_img_data = sitk.GetArrayFromImage(enhanced_image)
     return enhanced_img_data
@@ -139,10 +142,10 @@ for window in signal_windows:
             for beta in betas:
                 print(f"Processing with window={window}, radius={radius}, alpha={alpha}, beta={beta}")
                 enhanced_img_data = enhance_signal_window(img_data, window, radius=radius, alpha=alpha, beta=beta)
-                
+
                 # Save the enhanced volume
                 output_file_path = os.path.join(output_dir, f'NL001_3d_clahe_window_{window[0]}_{window[1]}_radius_{radius[0]}_alpha_{alpha}_beta_{beta}.nii.gz')
                 save_nifti(enhanced_img_data, original_image, output_file_path)
-                
+
                 # Optionally display example slices
                 display_slices(enhanced_img_data, title=f"Enhanced Image (window={window}, radius={radius}, alpha={alpha}, beta={beta})")
