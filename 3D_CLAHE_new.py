@@ -49,7 +49,7 @@ def window_image(img_data, min_intensity, max_intensity):
     windowed_img_data = cv2.normalize(windowed_img_data, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
     return windowed_img_data
 
-def apply_3d_clahe(img_data, radius=(4, 4, 4), alpha=0.3, beta=0.3):
+def apply_3d_clahe(img_data, radius=None, alpha=None, beta=None):
     """
     Apply 3D CLAHE using SimpleITK.
     """
@@ -66,7 +66,7 @@ def apply_3d_clahe(img_data, radius=(4, 4, 4), alpha=0.3, beta=0.3):
     enhanced_img_data = sitk.GetArrayFromImage(enhanced_image)
     return enhanced_img_data
 
-def enhance_signal_window(img_data, window, radius=(4, 4, 4), alpha=0.3, beta=0.3):
+def enhance_signal_window(img_data, window, radius=None, alpha=None, beta=None):
     """
     Enhance the image only within the specified signal window.
     """
@@ -101,7 +101,8 @@ def display_slices(img_data, title="Image"):
     axs[2].axis('off')
 
     plt.tight_layout()
-    plt.show()
+    plt.savefig("demo_output.png")
+    #plt.show()
 
 # Load the chest CT image (NIfTI format)
 image_path = 'NL001_non_contrast.nii.gz'  # Replace with your image path
@@ -113,11 +114,9 @@ img_data, spacing, original_image = load_nii_image(image_path)
 # Option to manually specify intensity ranges
 manual_signal_windows = [
     # Example of manually specified intensity ranges (min_intensity, max_intensity)
-    (-160, 240),
-    (-120, 200),
-    (-100, 180),
-    (0, 80),
-    (10,60)
+    (40,60),
+    (35,65),
+    (30,70)
 ]
 
 use_manual_windows = len(manual_signal_windows) > 0
