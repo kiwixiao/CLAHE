@@ -49,7 +49,7 @@ def window_image(img_data, min_intensity, max_intensity):
     windowed_img_data = cv2.normalize(windowed_img_data, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
     return windowed_img_data
 
-def apply_3d_clahe(img_data, radius=None, alpha=None, beta=None):
+def apply_3d_clahe(img_data, radius=None, alpha=None):
     """
     Apply 3D CLAHE using SimpleITK.
     """
@@ -60,19 +60,17 @@ def apply_3d_clahe(img_data, radius=None, alpha=None, beta=None):
         clahe_filter.SetRadius(radius)
     if alpha is not None:
         clahe_filter.SetAlpha(alpha)
-    if beta is not None:
-        clahe_filter.SetBeta(beta)
     enhanced_image = clahe_filter.Execute(image)
     enhanced_img_data = sitk.GetArrayFromImage(enhanced_image)
     return enhanced_img_data
 
-def enhance_signal_window(img_data, window, radius=None, alpha=None, beta=None):
+def enhance_signal_window(img_data, window, radius=None, alpha=None):
     """
     Enhance the image only within the specified signal window.
     """
     min_intensity, max_intensity = window
     windowed_img_data = window_image(img_data, min_intensity, max_intensity)
-    enhanced_window = apply_3d_clahe(windowed_img_data, radius, alpha, beta)
+    enhanced_window = apply_3d_clahe(windowed_img_data, radius, alpha)
     mask = (img_data >= min_intensity) & (img_data <= max_intensity)
     enhanced_img_data = img_data.copy()
     enhanced_img_data[mask] = enhanced_window[mask]
@@ -137,7 +135,7 @@ for window in signal_windows:
     for radius in radii:
         for alpha in alphas:
                 print(f"Processing with window={window}, radius={radius}, alpha={alpha}")
-                enhanced_img_data = enhance_signal_window(img_data, window, radius=radius, alpha=alpha, beta=beta)
+                enhanced_img_data = enhance_signal_window(img_data, window, radius=radius, alpha=alpha)
 
                 # Save the enhanced volume
                 output_file_path = os.path.join(output_dir, f'NL001_3d_clahe_window_{window[0]}_{window[1]}_radius_{radius[0]}_alpha_{alpha}.nii.gz')
