@@ -130,20 +130,18 @@ else:
 
 # Arrays of alpha, beta, radii, and windows to explore
 alphas = [0.1, 0.3, 0.5, 0.7]
-#betas = [0.1, 0.3, 0.5, 0.7]
 radii = [(4, 4, 4), (8, 8, 8), (20,20,20)]
 
 # Iterate over combinations of windows, alpha, beta, and radii
 for window in signal_windows:
     for radius in radii:
         for alpha in alphas:
- #           for beta in betas:
-                print(f"Processing with window={window}, radius={radius}, alpha={alpha}, beta={}")
+                print(f"Processing with window={window}, radius={radius}, alpha={alpha}")
                 enhanced_img_data = enhance_signal_window(img_data, window, radius=radius, alpha=alpha, beta=beta)
 
                 # Save the enhanced volume
-                output_file_path = os.path.join(output_dir, f'NL001_3d_clahe_window_{window[0]}_{window[1]}_radius_{radius[0]}_alpha_{alpha}_beta_{}.nii.gz')
+                output_file_path = os.path.join(output_dir, f'NL001_3d_clahe_window_{window[0]}_{window[1]}_radius_{radius[0]}_alpha_{alpha}.nii.gz')
                 save_nifti(enhanced_img_data, original_image, output_file_path)
 
                 # Optionally display example slices
-                display_slices(enhanced_img_data, title=f"Enhanced Image (window={window}, radius={radius}, alpha={alpha}, beta={})")
+                display_slices(enhanced_img_data, title=f"Enhanced Image (window={window}, radius={radius}, alpha={alpha})")
